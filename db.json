@@ -1,0 +1,60 @@
+{
+  "student": [
+    {
+      "id": "1",
+      "name": "John",
+      "age": 18,
+      "phone": "+998 99 688 17 06",
+      "guruh": "React js Bootcapm N11",
+      "teacher": "Uktam",
+      "address": "Sergeli o'zgarish"
+    },
+    {
+      "id": "6e53",
+      "name": "Xushnud",
+      "age": "17",
+      "phone": "54353",
+      "group": "Standart N1",
+      "teacher": "dwaDdw",
+      "address": "Toshkent"
+    }
+  ],
+  "teacher": [
+    {
+      "id": "1",
+      "name": "John",
+      "course": "Frontend"
+    },
+    {
+      "id": "5226",
+      "course": " Standart Backend",
+      "name": "dwaDdw"
+    },
+    {
+      "id": "5b80",
+      "course": "game developers",
+      "name": "stu"
+    }
+  ],
+  "group": [
+    {
+      "id": "1",
+      "name": "Standart N1",
+      "course": "Backend"
+    }
+  ],
+  "course": [
+    {
+      "id": "1",
+      "course": " Standart Backend",
+      "duration": "8 oy",
+      "price": "100$"
+    },
+    {
+      "id": "7ddc",
+      "course": " Standart Backendl",
+      "duration": "edss",
+      "price": "323232"
+    }
+  ]
+}
