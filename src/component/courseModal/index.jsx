@@ -5,6 +5,8 @@ import Button from '@mui/material/Button';
 import { FormControl, TextField } from '@mui/material';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { CourseValidationSchema } from "@utils/validation.js";
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 const style = {
   position: 'absolute',
@@ -27,23 +29,18 @@ export default function CourseModal({ open, handleClose, editingCourse }) {
 
   useEffect(() => {
     if (editingCourse) {
-      setForm(editingCourse); // Tahrirlanayotgan kursni modalga yuklash
+      setForm(editingCourse);
     } else {
       setForm({ course: '', duration: '', price: '' });
     }
   }, [editingCourse]);
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setForm({ ...form, [name]: value });
-  };
-
-  const handleSubmit = async () => {
+  const handleSubmit = async (values) => {
     try {
       if (editingCourse) {
-        await axios.put(`http://localhost:3000/course/${editingCourse.id}`, form);
+        await axios.put(`http://localhost:3000/course/${editingCourse.id}`, values);
       } else {
-        await axios.post('http://localhost:3000/course', form);
+        await axios.post('http://localhost:3000/course', values);
       }
       handleClose();
     } catch (err) {
@@ -52,47 +49,69 @@ export default function CourseModal({ open, handleClose, editingCourse }) {
   };
 
   return (
-    <div>
-      <Modal
-        keepMounted
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="keep-mounted-modal-title"
-        aria-describedby="keep-mounted-modal-description"
-      >
-        <Box sx={style}>
-          <FormControl fullWidth className='flex flex-col gap-3'>
-            <TextField
-              fullWidth
-              label="Course Name"
-              id="course"
-              name="course"
-              value={form.course || ""}
-              onChange={handleChange}
-            />
-            <TextField
-              fullWidth
-              label="Duration (in weeks)"
-              id="duration"
-              name="duration"
-              value={form.duration || ""}
-              onChange={handleChange}
-            />
-            <TextField
-              fullWidth
-              label="Price (in USD)"
-              id="price"
-              name="price"
-              type="number"
-              value={form.price || ""}
-              onChange={handleChange}
-            />
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
-              Save
-            </Button>
-          </FormControl>
-        </Box>
-      </Modal>
-    </div>
+    <Modal
+      keepMounted
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="keep-mounted-modal-title"
+      aria-describedby="keep-mounted-modal-description"
+    >
+      <Box sx={style}>
+        <Formik
+          initialValues={form}
+          enableReinitialize={true} 
+          validationSchema={CourseValidationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ values, handleChange, handleSubmit }) => (
+            <Form className='flex flex-col gap-3'>
+              <FormControl fullWidth>
+                <Field
+                  as={TextField}
+                  fullWidth
+                  label="Course Name"
+                  id="course"
+                  name="course"
+                  value={values.course}
+                  onChange={handleChange}
+                  helperText={<ErrorMessage name='course' component="p" className='text-[red] text-[15px]' />}
+                />
+              </FormControl>
+
+              <FormControl fullWidth>
+                <Field
+                  as={TextField}
+                  fullWidth
+                  label="Duration (in weeks)"
+                  id="duration"
+                  name="duration"
+                  value={values.duration}
+                  onChange={handleChange}
+                  helperText={<ErrorMessage name='duration' component="p" className='text-[red] text-[15px]' />}
+                />
+              </FormControl>
+
+              <FormControl fullWidth>
+                <Field
+                  as={TextField}
+                  fullWidth
+                  label="Price (in USD)"
+                  id="price"
+                  name="price"
+                  type="number"
+                  value={values.price}
+                  onChange={handleChange}
+                  helperText={<ErrorMessage name='price' component="p" className='text-[red] text-[15px]' />}
+                />
+              </FormControl>
+
+              <Button variant="contained" color="primary" type="submit">
+                Save
+              </Button>
+            </Form>
+          )}
+        </Formik>
+      </Box>
+    </Modal>
   );
 }

@@ -6,6 +6,10 @@ import Button from '@mui/material/Button';
 import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { groupValidationSchema } from '@utils/validation.js';
+
+
 
 const style = {
   position: 'absolute',
@@ -38,17 +42,12 @@ export default function GroupModal({ open, handleClose, editingGroup }) {
     }
   }, [editingGroup]);
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setForm({ ...form, [name]: value });
-  };
-
-  const handleSubmit = async () => {
+  const handleSubmit = async (values) => {
     try {
       if (editingGroup) {
-        await axios.put(`http://localhost:3000/group/${editingGroup.id}`, form); 
+        await axios.put(`http://localhost:3000/group/${editingGroup.id}`, values); 
       } else {
-        await axios.post('http://localhost:3000/group', form); 
+        await axios.post('http://localhost:3000/group', values); 
       }
       handleClose();
     } catch (err) {
@@ -57,46 +56,57 @@ export default function GroupModal({ open, handleClose, editingGroup }) {
   };
 
   return (
-    <div>
-      <Modal
-        keepMounted
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="keep-mounted-modal-title"
-        aria-describedby="keep-mounted-modal-description"
-      >
-        <Box sx={style}>
-          <FormControl fullWidth className='flex flex-col gap-3'>
-            <InputLabel id="course-label">Course</InputLabel>
-            <Select
-              labelId="course-label"
-              id="course-select"
-              name="course"
-              value={form.course}
-              onChange={handleChange}
-              label="Course"
-            >
-              {courseList.map(course => (
-                <MenuItem key={course.id} value={course.course}>
-                  {course.course}
-                </MenuItem>
-              ))}
-            </Select>
+    <Modal
+      keepMounted
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="keep-mounted-modal-title"
+      aria-describedby="keep-mounted-modal-description"
+    >
+      <Box sx={style}>
+        <Formik
+          initialValues={form}
+          enableReinitialize={true} // form qiymatlarini yangilab turish
+          validationSchema={groupValidationSchema}
+          onSubmit={handleSubmit}
+        >
+          {({ values, handleChange }) => (
+            <Form>
+              <FormControl fullWidth className='flex flex-col gap-3'>
+                <InputLabel id="course-label">Course</InputLabel>
+                <Select
+                  labelId="course-label"
+                  id="course-select"
+                  name="course"
+                  value={values.course}
+                  onChange={handleChange}
+                  label="Course"
+                >
+                  {courseList.map(course => (
+                    <MenuItem key={course.id} value={course.course}>
+                      {course.course}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <ErrorMessage name="course" component="p" className="text-[red] text-[15px]" />
 
-            <TextField
-              fullWidth
-              label="Group Name"
-              name="name"
-              value={form.name || ""}
-              onChange={handleChange}
-            />
+                <TextField
+                  fullWidth
+                  label="Group Name"
+                  name="name"
+                  value={values.name || ""}
+                  onChange={handleChange}
+                />
+                <ErrorMessage name="name" component="p" className="text-[red] text-[15px]" />
 
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
-              Save
-            </Button>
-          </FormControl>
-        </Box>
-      </Modal>
-    </div>
+                <Button type="submit" variant="contained" color="primary">
+                  Save
+                </Button>
+              </FormControl>
+            </Form>
+          )}
+        </Formik>
+      </Box>
+    </Modal>
   );
 }

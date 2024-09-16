@@ -1,57 +1,25 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import { TextField, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import Notification from "../../utils/Notification";
-
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import {signInValidationSchema} from "@utils/validation.js"
 const SignIn = () => {
-    const [form, setForm] = useState({});
-    const [count, setCount] = useState(0);
-    const [time, setTime] = useState(8);
-    const [disabled, setDisabled] = useState(false);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        let timer;
-        if (count === 3) {
-            timer = setInterval(() => {
-                setTime(prev => {
-                    if (prev <= 1) {
-                        clearInterval(timer);
-                        setCount(0); 
-                        setTime(5); 
-                    }
-                    return prev - 1;
-                });
-            }, 1000);
-        }
-        return () => clearInterval(timer);
-    }, [count]);
+   
+    const handleSubmit = async (values, { resetForm }) => {
+        console.log(values);  
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setForm({ ...form, [name]: value });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setDisabled(true);
-
-        if (form.username === "admin") {
+        
+        if (values.name === 'admin') {
             await Notification({ title: "Success", type: "success" });
             navigate("/admin-layout");
-        } else if (form.username === 'student') {
-            await Notification({ title: "Xatolik yuz berdi", type: "error" });
-            navigate("/student-layout");
         } else {
             await Notification({ title: "Xatolik yuz berdi", type: "error" });
-            setCount(prev => prev + 1);
         }
-
-        setDisabled(false);
+        resetForm();  
     };
 
     return (
@@ -63,42 +31,48 @@ const SignIn = () => {
                         <div className='card-header'>
                             <Typography variant="h4">Sign In</Typography>
                             <Typography variant="h6" className='text-gray-500'>Username: admin</Typography>
-                            <Typography variant="h6" className='text-gray-500'>password: yuq</Typography>
+                            <Typography variant="h6" className='text-gray-500'>Password: yuq</Typography>
                         </div>
                         <div className='card-body'>
-                            <form onSubmit={handleSubmit} id='mui'>
-                                <TextField
-                                    disabled={count === 3}
-                                    fullWidth
-                                    label="Username"
-                                    name='username'
-                                    onChange={handleChange}
-                                />
-                                <TextField
-                                    disabled={count === 3}
-                                    fullWidth
-                                    sx={{ marginTop: "10px" }}
-                                    label="Password"
-                                    type='password'
-                                    name='password'
-                                    onChange={handleChange}
-                                />
-                            </form>
+                            <Formik
+                                initialValues={{ name: "", password: "" }}
+                                onSubmit={handleSubmit}
+                                validationSchema={signInValidationSchema}
+                            >
+                                <Form id='sign-in'>
+                                    <Field
+                                        name='name'
+                                        as={TextField}
+                                        type='text'
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+                                        label="Name"
+                                        helperText={<ErrorMessage name='name' component="p" className='text-[red] text-[15px]' />}
+                                    />
+
+                                    <Field
+                                        name='password'
+                                        as={TextField}
+                                        type='password'
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+                                        label="Password"
+                                        helperText={<ErrorMessage name='password' component="p" className='text-[red] text-[15px]' />}
+                                    />
+                                </Form>
+                            </Formik>
                         </div>
                         <div className='card-footer'>
                             <Button
                                 variant='contained'
                                 color="primary"
                                 type='submit'
-                                form="mui"
-                                disabled={disabled || count === 3}
+                                form="sign-in"
                             >
                                 Save
                             </Button>
-                            <p  className='text-center text-red-500 text-lg'>
-
-                                {count === 3 && `Malum muddat kutib turing: ${time} sekund`}
-                            </p>
                         </div>
                     </div>
                 </div>

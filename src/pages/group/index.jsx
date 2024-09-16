@@ -17,6 +17,7 @@ const Group = () => {
   const handleClose = () => {
     setOpen(false);
     setEditingGroup(null);
+    window.location.reload();
   };
 
   const openModal = (group = null) => {

@@ -18,7 +18,7 @@ const Index = () => {
 
   const handleClose = () => {
     setOpen(false);
-    
+    window.location.reload();
   };
 
   const openModal = () => {

@@ -1,10 +1,11 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import { useState, useEffect } from 'react';
+import { useFormik } from 'formik';
 import axios from 'axios';
+import { teacherValidationSchema } from '@utils/validation.js'; // Validation sxemasi
 
 const style = {
   position: 'absolute',
@@ -18,81 +19,95 @@ const style = {
   p: 4,
 };
 
-export default function KeepMountedModal({ open: openProp, handleClose, course, editingTeacher }) {
-  const [form, setForm] = useState({
-    course: '',
-    name: ''
+export default function TeacherModal({ open, handleClose, editingTeacher }) {
+  const [courses, setCourses] = useState([]); // Kurslar uchun state
+
+  // Kurslarni API dan olish
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/course');
+        console.log(response.data); // Kurslar ro'yxatini konsolga chiqaramiz
+        setCourses(response.data);
+      } catch (error) {
+        console.error('Error fetching courses:', error);
+      }
+    };
+  
+    fetchCourses();
+  }, []);
+  
+
+  const formik = useFormik({
+    initialValues: {
+      course: editingTeacher ? editingTeacher.course : '',
+      name: editingTeacher ? editingTeacher.name : '',
+    },
+    validationSchema: teacherValidationSchema, // Yup validatsiya sxemasi
+    onSubmit: async (values) => {
+      try {
+        if (editingTeacher) {
+          await axios.put(`http://localhost:3000/teacher/${editingTeacher.id}`, values);
+        } else {
+          await axios.post('http://localhost:3000/teacher', values);
+        }
+        handleClose();
+      } catch (error) {
+        console.error('Error saving teacher:', error);
+      }
+    },
+    enableReinitialize: true,
   });
 
-  useEffect(() => {
-    if (editingTeacher) {
-      setForm(editingTeacher); 
-    } else {
-      setForm({ course: '', name: '' });
-    }
-  }, [editingTeacher]);
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setForm({ ...form, [name]: value });
-  };
-
-  const handleSubmit = async () => {
-    try {
-      if (editingTeacher) {
-        await axios.put(`http://localhost:3000/teacher/${editingTeacher.id}`, form);
-      } else {
-        await axios.post('http://localhost:3000/teacher', form);
-      }
-      handleClose();
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   return (
-    <div>
-      <Modal
-        keepMounted
-        open={openProp}
-        onClose={handleClose}
-        aria-labelledby="keep-mounted-modal-title"
-        aria-describedby="keep-mounted-modal-description"
-      >
-        <Box sx={style}>
+    <Modal open={open} onClose={handleClose} aria-labelledby="modal-title" aria-describedby="modal-description">
+      <Box sx={style}>
+        <form onSubmit={formik.handleSubmit}>
           <FormControl fullWidth className='flex flex-col gap-3'>
-            <InputLabel id="demo-simple-select-label">Course</InputLabel>
+            {/* InputLabel komponentining "htmlFor" atributi Select bilan bog'lanadi */}
+            <InputLabel id="course-label">Course</InputLabel>
+
+            {/* Select komponentida "labelId" bilan InputLabel ga bog'lanamiz */}
             <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              name="course"
-              value={form.course}
-              label="Course Name"
-              onChange={handleChange}
-              sx={{ width: '100%' }}
-            >
-              {course.map((item) => (
-                <MenuItem value={item.course} key={item.id}>
-                  {item.course}
-                </MenuItem>
-              ))}
-            </Select>
+  labelId="course-label"
+  id="course-select"
+  name="course"
+  value={formik.values.course}
+  onChange={formik.handleChange}
+  error={formik.touched.course && Boolean(formik.errors.course)}
+>
+  {courses.length > 0 ? (
+    courses.map((course) => (
+      <MenuItem key={course.id} value={course.course}>
+        {course.course}
+      </MenuItem>
+    ))
+  ) : (
+    <MenuItem disabled>No courses available</MenuItem>
+  )}
+</Select>
+
+
+            {formik.touched.course && formik.errors.course ? (
+              <div style={{ color: 'red' }}>{formik.errors.course}</div>
+            ) : null}
 
             <TextField
               fullWidth
               label="Teacher Name"
-              id="fullWidth"
               name="name"
-              value={form.name || ""}
-              onChange={handleChange}
+              value={formik.values.name}
+              onChange={formik.handleChange}
+              error={formik.touched.name && Boolean(formik.errors.name)}
+              helperText={formik.touched.name && formik.errors.name}
             />
 
-            <Button variant="contained" color="primary" onClick={handleSubmit}>
-              Save
+            <Button type="submit" variant="contained" color="primary">
+              {editingTeacher ? 'Update' : 'Add'} Teacher
             </Button>
           </FormControl>
-        </Box>
-      </Modal>
-    </div>
+        </form>
+      </Box>
+    </Modal>
   );
 }
