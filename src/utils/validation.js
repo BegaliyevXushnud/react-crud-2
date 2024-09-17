@@ -1,5 +1,6 @@
 import * as Yup from 'yup';  
 
+// ======= sign in =========
  export const signInValidationSchema = Yup.object().shape({
     name: Yup.string().required("Name is required"),
     password: Yup.string()
@@ -9,6 +10,22 @@ import * as Yup from 'yup';
         )
         .required("Password is required"),
 });
+
+
+export const signUpValidationSchema = Yup.object().shape({
+  first_name: Yup.string().required("First Name is required"),
+  last_name: Yup.string().required("Last Name is required"),
+  phone_number: Yup.string().required("Phone Number is required"),
+  email: Yup.string().email("Email  is invalid").required("Email is required"),
+  password: Yup.string()
+      .matches(
+          /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
+          "Password must be at least 6 characters and contain at least one uppercase and one lowercase letter"
+      )
+      .required("Password is required"),
+});
+
+
 
 // ======== Course ==========
 export const CourseValidationSchema = Yup.object().shape({

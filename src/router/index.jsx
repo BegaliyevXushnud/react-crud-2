@@ -5,7 +5,7 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 import App from '../App'; 
-import { SignIn, StudentLayout, AdminLayout,Student,Teacher,Course,Group } from '@pages';
+import { SignIn, StudentLayout, AdminLayout,Student,Teacher,Course,Group,SignUp } from '@pages';
 
 
 const Index = () => {
@@ -14,6 +14,7 @@ const Index = () => {
       <>
         <Route path="/" element={<App />} >
           <Route index element={<SignIn/>} />
+          <Route path='sign-up' element={<SignUp/>} />
           <Route path='admin-layout' element={<AdminLayout/>}>
 <Route  index element={<Teacher/>}/>
 <Route path='student' element={<Student/>}/>

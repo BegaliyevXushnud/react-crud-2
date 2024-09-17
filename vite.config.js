@@ -11,6 +11,7 @@ export default defineConfig({
       { find: '@component', replacement: '/src/component' },
       { find: '@layout', replacement: '/src/layout' },
       { find: '@utils', replacement: '/src/utils' }, 
+      { find: '@validation', replacement: '/src/utils/validation' }, 
     ]
   }
 })
