@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import Notification from "../../utils/Notification";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { signInValidationSchema } from '@validation'; // Use the correct path for validation
+import { signInValidationSchema } from '@validation';
 import axios from 'axios';
 
 const SignIn = () => {
@@ -13,19 +13,18 @@ const SignIn = () => {
     const handleSubmit = async (values, { resetForm }) => {
         console.log(values);  
         try{
-            const response = await axios.post('https://texnoark.ilyosbekdev.uz/auth/sign-in', values);
+            const response = await axios.post('https://texnoark.ilyosbekdev.uz/auth/sign-in', values );
             console.log(response);
-            if(response.status === 200) {
-                await Notification({ title: "Success", type: "success" });
-                navigate("/admin-layout");
-            } else {
-                await Notification({ title: "Xatolik yuz berdi", type: "error" });
-            }
-        } catch(err) {
+        } catch(err){
             console.log(err);
-            await Notification({ title: "Xatolik yuz berdi", type: "error" });
         }
 
+        if (values.name === 'admin') {
+            await Notification({ title: "Success", type: "success" });
+            navigate("/admin-layout");
+        } else {
+            await Notification({ title: "Xatolik yuz berdi", type: "error" });
+        }
         resetForm();  
     };
 
@@ -37,6 +36,8 @@ const SignIn = () => {
                     <div className='card'>
                         <div className='card-header'>
                             <Typography variant="h4">Sign In</Typography>
+                            <Typography variant="h6" className='text-gray-500'>Username: admin</Typography>
+                            <Typography variant="h6" className='text-gray-500'>Password: yuq</Typography>
                         </div>
                         <div className='card-body'>
                             <Formik
@@ -55,6 +56,7 @@ const SignIn = () => {
                                         label="Name"
                                         helperText={<ErrorMessage name='name' component="p" className='text-[red] text-[15px]' />}
                                     />
+
                                     <Field
                                         name='password'
                                         as={TextField}
@@ -65,17 +67,26 @@ const SignIn = () => {
                                         label="Password"
                                         helperText={<ErrorMessage name='password' component="p" className='text-[red] text-[15px]' />}
                                     />
-                                    <Button
-                                        variant='contained'
-                                        color="primary"
-                                        type='submit'
-                                        fullWidth
-                                        className="mt-3"
-                                    >
-                                        Sign In
-                                    </Button>
                                 </Form>
                             </Formik>
+                        </div>
+                        <div className='card-footer'>
+                            <Button
+                                variant='contained'
+                                color="primary"
+                                type='submit'
+                                form="sign-in"
+                            >
+                                Save
+                            </Button>
+                            <Button
+                                variant='outlined'
+                                color="primary"
+                                onClick={() => navigate("/sign-up")}
+                                style={{ marginLeft: '10px' }}
+                            >
+                                Go to Sign Up
+                            </Button>
                         </div>
                     </div>
                 </div>
