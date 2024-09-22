@@ -1,119 +1,172 @@
-import * as React from 'react';
-import { TextField, Button, Typography } from '@mui/material';
-import { ToastContainer } from 'react-toastify';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { signUpValidationSchema } from '@validation'; // Use the correct path for validation
-import Notification from "../../utils/Notification";
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import { signUpValidationSchema } from "../../utils/validation";
+import axios from "axios";
+import FormHelperText from "@mui/material/FormHelperText";
+import InputLabel from "@mui/material/InputLabel";
 
-const SignUp = () => {
-    const navigate = useNavigate();
-    const initialValues = {
-        first_name: "",
-        last_name: "",
-        phone_number: "", // Adjusted to match Field name
-        email: "",
-        password: ""
-    };
+const Index = () => {
+  const navigate = useNavigate();
 
-    const handleSubmit = async (values) => {
-        console.log(values);
-        try {
-            const response = await axios.post('https://texnoark.ilyosbekdev.uz/auth/admin/sign-up', values);
-            if (response.status === 201) {
-                await Notification({ title: "Success", type: "success" });
-                navigate("/");
-            }
-        } catch (err) {
-            console.error(err);
-            await Notification({ title: "Xatolik yuz berdi", type: "error" });
-        }
-    };
+  const initialValues = {
+    first_name: "",
+    last_name: "",
+    phone_number: "",
+    email: "",
+    password: "",
+  };
 
-    return (
-        <div className='container'>
-            <ToastContainer />
-            <div className='row mt-5'>
-                <div className='col-md-6 offset-3'>
-                    <div className='card'>
-                        <div className='card-header'>
-                            <Typography variant="h4">Sign Up</Typography>
-                        </div>
-                        <div className='card-body'>
-                            <Formik
-                                initialValues={initialValues}
-                                onSubmit={handleSubmit}
-                                validationSchema={signUpValidationSchema}
-                            >
-                                <Form id='sign-up'>
-                                    <Field
-                                        name='first_name'
-                                        as={TextField}
-                                        type='text'
-                                        fullWidth
-                                        margin="normal"
-                                        variant="outlined"
-                                        label="First Name"
-                                        helperText={<ErrorMessage name='first_name' component="p" className='text-[red] text-[15px]' />}
-                                    />
-                                    <Field
-                                        name='last_name'
-                                        as={TextField}
-                                        type='text'
-                                        fullWidth
-                                        margin="normal"
-                                        variant="outlined"
-                                        label="Last Name"
-                                        helperText={<ErrorMessage name='last_name' component="p" className='text-[red] text-[15px]' />}
-                                    />
-                                    <Field
-                                        name='phone_number' // Adjusted to match initialValues
-                                        as={TextField}
-                                        type='text'
-                                        fullWidth
-                                        margin="normal"
-                                        variant="outlined"
-                                        label="Phone Number"
-                                        helperText={<ErrorMessage name='phone_number' component="p" className='text-[red] text-[15px]' />}
-                                    />
-                                    <Field
-                                        name='email'
-                                        as={TextField}
-                                        type='email'
-                                        fullWidth
-                                        margin="normal"
-                                        variant="outlined"
-                                        label="Email"
-                                        helperText={<ErrorMessage name='email' component="p" className='text-[red] text-[15px]' />}
-                                    />
-                                    <Field
-                                        name='password'
-                                        as={TextField}
-                                        type='password'
-                                        fullWidth
-                                        margin="normal"
-                                        variant="outlined"
-                                        label="Password"
-                                        helperText={<ErrorMessage name='password' component="p" className='text-[red] text-[15px]' />}
-                                    />
-                                    <Button
-                                        variant='contained'
-                                        color="primary"
-                                        type='submit'
-                                        fullWidth
-                                        className="mt-3"
-                                    >
-                                        Sign Up
-                                    </Button>
-                                </Form>
-                            </Formik>
-                        </div>
-                    </div>
-                </div>
+  const handleSubmit = async (values) => {
+    try {
+      const response = await axios.post("https://texnoark.ilyosbekdev.uz/auth/admin/sign-up", values);
+      if (response.status === 201) {
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return (
+    <div className="container">
+      <ToastContainer />
+      <div className="row mt-5">
+        <div className="col-md-6 offset-3">
+          <div className="card">
+            <div className="card-header">
+              <h1 className="text-center">Sign-Up</h1>
             </div>
+            <div className="card-body">
+              <Formik
+                initialValues={initialValues}
+                onSubmit={handleSubmit}
+                validationSchema={signUpValidationSchema}
+              >
+                <Form id="form">
+                  <Field
+                    name="first_name"
+                    as={TextField}
+                    fullWidth
+                    label={<span style={{ color: "black" }}>First Name</span>} 
+                    placeholder="Enter your first name" 
+                    type="text"
+                    error={Boolean(<ErrorMessage name="first_name" />)}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "black",
+                        },
+                      },
+                      mb: 2, 
+                      "& .MuiInputBase-input": {
+                        color: "black",
+                      },
+                    }}
+                  />
+                  <ErrorMessage name="first_name" component={FormHelperText} sx={{ color: "red" }} />
+
+                  <Field
+                    name="last_name"
+                    as={TextField}
+                    fullWidth
+                    label={<span style={{ color: "black" }}>Last Name</span>} 
+                    placeholder="Enter your last name" 
+                    type="text"
+                    error={Boolean(<ErrorMessage name="last_name" />)}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "black",
+                        },
+                      },
+                      mb: 2, 
+                      "& .MuiInputBase-input": {
+                        color: "black", 
+                      },
+                    }}
+                  />
+                  <ErrorMessage name="last_name" component={FormHelperText} sx={{ color: "red" }} />
+
+                  <Field
+                    name="phone_number"
+                    as={TextField}
+                    fullWidth
+                    label={<span style={{ color: "black" }}>Phone Number</span>} 
+                    placeholder="Enter your phone number"
+                    type="text"
+                    error={Boolean(<ErrorMessage name="phone_number" />)}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "black",
+                        },
+                      },
+                      mb: 2, 
+                      "& .MuiInputBase-input": {
+                        color: "black", 
+                      },
+                    }}
+                  />
+                  <ErrorMessage name="phone_number" component={FormHelperText} sx={{ color: "red" }} />
+
+                  <Field
+                    name="email"
+                    as={TextField}
+                    fullWidth
+                    label={<span style={{ color: "black" }}>Email</span>} 
+                    placeholder="Enter your email" 
+                    type="email"
+                    error={Boolean(<ErrorMessage name="email" />)}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "black",
+                        },
+                      },
+                      mb: 2, 
+                      "& .MuiInputBase-input": {
+                        color: "black", 
+                      },
+                    }}
+                  />
+                  <ErrorMessage name="email" component={FormHelperText} sx={{ color: "red" }} />
+
+                  <Field
+                    name="password"
+                    as={TextField}
+                    fullWidth
+                    label={<span style={{ color: "black" }}>Password</span>} 
+                    placeholder="Enter your password" 
+                    type="password"
+                    error={Boolean(<ErrorMessage name="password" />)}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "black",
+                        },
+                      },
+                      mb: 2, 
+                      "& .MuiInputBase-input": {
+                        color: "black", 
+                      },
+                    }}
+                  />
+                  <ErrorMessage name="password" component={FormHelperText} sx={{ color: "red" }} />
+
+                  <Button form="form" type="submit" variant="contained" className="mt-3">
+                    Save
+                  </Button>
+                </Form>
+              </Formik>
+            </div>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
-export default SignUp;
+export default Index;

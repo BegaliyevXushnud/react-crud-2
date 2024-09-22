@@ -12,14 +12,24 @@
   ],
   "teacher": [
     {
-      "course": " Standart Backend",
+      "course": " Standart Backendl",
       "name": "John",
       "id": "1"
     },
     {
-      "id": "5226",
-      "course": " Standart Backend",
-      "name": "dwaDdwdwd"
+      "course": "targeting",
+      "name": "Xushnudbek",
+      "id": "5226"
+    },
+    {
+      "id": "ae3a",
+      "course": "targeting",
+      "name": "Xushnud"
+    },
+    {
+      "id": "0174",
+      "course": " Standart Backendl",
+      "name": "Xushnud"
     }
   ],
   "group": [
@@ -51,12 +61,6 @@
       "course": "targeting",
       "duration": "22",
       "price": "3232"
-    },
-    {
-      "id": "2966",
-      "course": " Standart",
-      "duration": "fdfdfdff",
-      "price": 4343
     }
   ]
 }

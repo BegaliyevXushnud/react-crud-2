@@ -9,20 +9,31 @@ import axios from 'axios';
 
 const SignIn = () => {
     const navigate = useNavigate();
+    const initialValues = {
+        phone_number: "",
+        password: "",
+    };
 
     const handleSubmit = async (values, { resetForm }) => {
         console.log(values);  
-        try{
-            const response = await axios.post('https://texnoark.ilyosbekdev.uz/auth/sign-in', values );
-            console.log(response);
-        } catch(err){
-            console.log(err);
-        }
 
-        if (values.name === 'admin') {
-            await Notification({ title: "Success", type: "success" });
-            navigate("/admin-layout");
-        } else {
+        try {
+            const response = await axios.post('https://texnoark.ilyosbekdev.uz/auth/sign-in', {
+                phone_number: values.phone_number,
+                password: values.password
+            });
+
+            if (response.status === 200 || response.status === 201) {
+                const access_token = response?.data?.data?.tokens?.access_token;
+                console.log("Access token:", token);
+                localStorage.setItem("access_token", access_token)
+                await Notification({ title: "Success", type: "success" });
+                navigate("/admin-layout");
+            } else {
+                await Notification({ title: "Xatolik yuz berdi", type: "error" });
+            }
+        } catch (err) {
+            console.log(err.response?.data || err.message);
             await Notification({ title: "Xatolik yuz berdi", type: "error" });
         }
         resetForm();  
@@ -41,44 +52,53 @@ const SignIn = () => {
                         </div>
                         <div className='card-body'>
                             <Formik
-                                initialValues={{ name: "", password: "" }}
+                                initialValues={initialValues}
                                 onSubmit={handleSubmit}
                                 validationSchema={signInValidationSchema}
                             >
-                                <Form id='sign-in'>
-                                    <Field
-                                        name='name'
-                                        as={TextField}
-                                        type='text'
-                                        fullWidth
-                                        margin="normal"
-                                        variant="outlined"
-                                        label="Name"
-                                        helperText={<ErrorMessage name='name' component="p" className='text-[red] text-[15px]' />}
-                                    />
-
-                                    <Field
-                                        name='password'
-                                        as={TextField}
-                                        type='password'
-                                        fullWidth
-                                        margin="normal"
-                                        variant="outlined"
-                                        label="Password"
-                                        helperText={<ErrorMessage name='password' component="p" className='text-[red] text-[15px]' />}
-                                    />
-                                </Form>
+                                {() => (
+                                    <Form id='sign-in'>
+                                        <Field
+                                            name='phone_number'
+                                            as={TextField}
+                                            type='text'
+                                            fullWidth
+                                            margin="normal"
+                                            variant="outlined"
+                                            label="Phone number"
+                                            helperText={
+                                                <React.Fragment>
+                                                    <ErrorMessage name='phone_number' />
+                                                </React.Fragment>
+                                            }
+                                        />
+                                        <Field
+                                            name='password'
+                                            as={TextField}
+                                            type='password'
+                                            fullWidth
+                                            margin="normal"
+                                            variant="outlined"
+                                            label="Password"
+                                            helperText={
+                                                <React.Fragment>
+                                                    <ErrorMessage name='password' />
+                                                </React.Fragment>
+                                            }
+                                        />
+                                        <Button
+                                            variant='contained'
+                                            color="primary"
+                                            type='submit'
+                                            style={{ marginTop: '10px' }}
+                                        >
+                                            Save
+                                        </Button>
+                                    </Form>
+                                )}
                             </Formik>
                         </div>
                         <div className='card-footer'>
-                            <Button
-                                variant='contained'
-                                color="primary"
-                                type='submit'
-                                form="sign-in"
-                            >
-                                Save
-                            </Button>
                             <Button
                                 variant='outlined'
                                 color="primary"

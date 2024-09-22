@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 
 // ======= sign in =========
  export const signInValidationSchema = Yup.object().shape({
-    name: Yup.string().required("Name is required"),
+    phone_number: Yup.string().required("phone number is required"),
     password: Yup.string()
         .matches(
             /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
