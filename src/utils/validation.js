@@ -67,8 +67,8 @@ export const groupValidationSchema = Yup.object().shape({
       .max(100, 'Age cannot exceed 100'),
     
     phone: Yup.string()
-      .required('Phone is required')
-      .matches(/^\d{10}$/, 'Phone must be exactly 10 digits'),
+      .required('Phone is required'),
+     
     
     group: Yup.string()
       .required('Group is required'),

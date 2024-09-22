@@ -1,14 +1,15 @@
-
-import axios from 'axios'
+import axios from 'axios';
 
 const https = axios.create({
-    baseURL: 'https://texnoark.ilyosbekovdev.uz',
-})
+    baseURL: 'https://texnoark.ilyosbekdev.uz',
+});
+
 https.interceptors.request.use((config) => {
-    const access_token = localStorage.getItem("access_token")
-    if(access_token){
-        config.headers.Authorization = `Bearer ${access_token}`
+    const access_token = localStorage.getItem("access_token");
+    if (access_token) {
+        config.headers['Authorization'] = `Bearer ${access_token}`;
     }
-    return config
-})
-export default https
+    return config;
+});
+
+export default https;

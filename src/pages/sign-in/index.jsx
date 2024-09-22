@@ -5,6 +5,7 @@ import { ToastContainer } from 'react-toastify';
 import Notification from "../../utils/Notification";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { signInValidationSchema } from '@validation';
+import { auth } from '@service';
 import axios from 'axios';
 
 const SignIn = () => {
@@ -18,10 +19,7 @@ const SignIn = () => {
         console.log(values);  
 
         try {
-            const response = await axios.post('https://texnoark.ilyosbekdev.uz/auth/sign-in', {
-                phone_number: values.phone_number,
-                password: values.password
-            });
+            const response = await auth.sign_in(values)
 
             if (response.status === 200 || response.status === 201) {
                 const access_token = response?.data?.data?.tokens?.access_token;
@@ -47,8 +45,8 @@ const SignIn = () => {
                     <div className='card'>
                         <div className='card-header'>
                             <Typography variant="h4">Sign In</Typography>
-                            <Typography variant="h6" className='text-gray-500'>Username: admin</Typography>
-                            <Typography variant="h6" className='text-gray-500'>Password: yuq</Typography>
+                            <Typography variant="h6" className='text-gray-500'>phone: +998 66 666 66 66</Typography>
+                            <Typography variant="h6" className='text-gray-500'>Password: Olti666666</Typography>
                         </div>
                         <div className='card-body'>
                             <Formik

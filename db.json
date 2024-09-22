@@ -2,12 +2,21 @@
   "student": [
     {
       "name": "Xushnud",
-      "age": "17",
+      "age": "18",
       "phone": "54353",
       "group": "Standart N1",
       "teacher": "John",
       "address": "Toshkent",
       "id": "6e53"
+    },
+    {
+      "id": "29de",
+      "name": "admin",
+      "age": "17",
+      "phone": "4334231435",
+      "group": "Standart N1",
+      "teacher": "Xushnudbek",
+      "address": "Toshkent"
     }
   ],
   "teacher": [
@@ -28,6 +37,11 @@
     },
     {
       "id": "0174",
+      "course": " Standart Backendl",
+      "name": "Xushnud"
+    },
+    {
+      "id": "c47b",
       "course": " Standart Backendl",
       "name": "Xushnud"
     }
@@ -62,5 +76,6 @@
       "duration": "22",
       "price": "3232"
     }
-  ]
+  ],
+  "category": []
 }
