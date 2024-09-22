@@ -25,7 +25,7 @@ const SignIn = () => {
 
             if (response.status === 200 || response.status === 201) {
                 const access_token = response?.data?.data?.tokens?.access_token;
-                console.log("Access token:", token);
+                console.log("Access token:", access_token);
                 localStorage.setItem("access_token", access_token)
                 await Notification({ title: "Success", type: "success" });
                 navigate("/admin-layout");
